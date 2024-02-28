@@ -20,7 +20,7 @@ export const Header = () => {
           <ModeToggle />
 
           <Button asChild>
-            <Link href='#'>Get started</Link>
+            <Link href='/sign-in'>Get started</Link>
           </Button>
         </div>
       </div>
