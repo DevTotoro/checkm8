@@ -1,6 +1,15 @@
+import { redirect } from 'next/navigation';
+import { currentUser } from '@clerk/nextjs';
+
 import { Header } from '~/components/layouts/header';
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
+  const user = await currentUser();
+
+  if (user) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className='flex min-h-screen flex-col'>
       <Header />

@@ -8,47 +8,43 @@ import { useSignUp } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { authSchema, type AuthSchemaType } from '~/lib/schemas/auth.schema';
+import { verifyEmailSchema, type VerifyEmailSchemaType } from '~/lib/schemas/auth.schema';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import { PasswordInput } from '~/components/password-input';
 import { Button } from '~/components/ui/button';
 import { catchClerkError } from '~/lib/utils';
 
-export const SignUpForm = () => {
+export const VerifyEmailForm = () => {
   const router = useRouter();
-  const { isLoaded, signUp } = useSignUp();
+  const { isLoaded, signUp, setActive } = useSignUp();
   const [isLoading, setIsLoading] = useState(false);
 
-  const reactHookForm = useForm<AuthSchemaType>({
-    resolver: zodResolver(authSchema),
+  const reactHookForm = useForm<VerifyEmailSchemaType>({
+    resolver: zodResolver(verifyEmailSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      code: '',
     },
   });
 
-  const onSubmit = async ({ email, password }: AuthSchemaType) => {
+  const onSubmit = async ({ code }: VerifyEmailSchemaType) => {
     if (!isLoaded) return;
 
     setIsLoading(true);
 
     try {
-      await signUp.create({
-        emailAddress: email,
-        password,
+      const result = await signUp.attemptEmailAddressVerification({
+        code,
       });
 
-      // Send email verification code
-      await signUp.prepareEmailAddressVerification({
-        strategy: 'email_code',
-      });
+      if (result.status === 'complete') {
+        await setActive({ session: result.createdSessionId });
 
-      router.push('/sign-up/verify-email');
+        router.push('/dashboard');
+      } else {
+        toast.error('There was an error verifying your email address.');
 
-      toast.message('Check your email', {
-        description: 'We sent you a 6-digit verification code.',
-      });
+        console.error(result);
+      }
     } catch (err) {
       catchClerkError(err);
     }
@@ -61,26 +57,19 @@ export const SignUpForm = () => {
       <form className='grid gap-4' onSubmit={(...args) => void reactHookForm.handleSubmit(onSubmit)(...args)}>
         <FormField
           control={reactHookForm.control}
-          name='email'
+          name='code'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Code</FormLabel>
               <FormControl>
-                <Input type='text' placeholder='janedoe42@gmail.com' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={reactHookForm.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <PasswordInput {...field} />
+                <Input
+                  placeholder='169420'
+                  {...field}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.trim();
+                    field.onChange(e);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -94,9 +83,9 @@ export const SignUpForm = () => {
               Please wait
             </>
           ) : (
-            <>Continue</>
+            <>Create account</>
           )}
-          <span className='sr-only'>Continue to email verification page</span>
+          <span className='sr-only'>Create account</span>
         </Button>
       </form>
     </Form>

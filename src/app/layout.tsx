@@ -6,6 +6,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 
 import { cn } from '~/lib/utils';
 import { ThemeProvider } from '~/components/theme/theme-provider';
+import { Toaster } from '~/components/ui/sonner';
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -19,11 +20,12 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ClerkProvider afterSignInUrl='/dashboard' afterSignUpUrl='/dashboard'>
+    <ClerkProvider>
       <html lang='en' suppressHydrationWarning>
         <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
           <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
             {children}
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

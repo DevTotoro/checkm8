@@ -19,3 +19,10 @@ export const authSchema = z.object({
         'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character',
     }),
 });
+
+export type VerifyEmailSchemaType = z.infer<typeof verifyEmailSchema>;
+export const verifyEmailSchema = z.object({
+  code: z.string().length(6, {
+    message: 'Verification code must be 6 characters long',
+  }),
+});

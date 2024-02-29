@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UserButton } from '@clerk/nextjs';
 
 import { Button } from '~/components/ui/button';
 import { Icons } from '~/components/icons';
@@ -17,6 +18,8 @@ export const Header = () => {
         </Link>
 
         <div className='flex flex-1 items-center justify-end space-x-2'>
+          <UserButton />
+
           <ModeToggle />
 
           <Button asChild>
