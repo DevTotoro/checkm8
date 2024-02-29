@@ -6,7 +6,7 @@ import { OAuthSignIn } from '~/components/auth/oauth-sign-in';
 import { SignUpForm } from '~/components/forms/sign-up-form';
 
 export const metadata: Metadata = {
-  title: 'checkmate • Sign up',
+  title: 'checkm8 • Sign up',
 };
 
 const SignUpPage = () => {

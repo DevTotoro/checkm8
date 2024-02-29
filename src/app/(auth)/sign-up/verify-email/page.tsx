@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '~/com
 import { VerifyEmailForm } from '~/components/forms/verify-email-form';
 
 export const metadata: Metadata = {
-  title: 'checkmate • Verify email',
+  title: 'checkm8 • Verify email',
 };
 
 const VerifyEmailPage = () => {

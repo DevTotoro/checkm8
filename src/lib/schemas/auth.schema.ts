@@ -26,3 +26,20 @@ export const verifyEmailSchema = z.object({
     message: 'Verification code must be 6 characters long',
   }),
 });
+
+export type CheckEmailSchemaType = z.infer<typeof checkEmailSchema>;
+export const checkEmailSchema = z.object({
+  email: authSchema.shape.email,
+});
+
+export type ResetPasswordSchemaType = z.infer<typeof resetPasswordSchema>;
+export const resetPasswordSchema = z
+  .object({
+    password: authSchema.shape.password,
+    confirmPassword: authSchema.shape.password,
+    code: verifyEmailSchema.shape.code,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });

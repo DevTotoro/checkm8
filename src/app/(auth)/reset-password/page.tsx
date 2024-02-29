@@ -1,17 +1,26 @@
 import type { Metadata } from 'next';
 
+import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '~/components/ui/card';
+import { ResetPasswordForm } from '~/components/forms/reset-password-form';
+
 export const metadata: Metadata = {
   title: 'checkm8 • Reset password',
 };
 
 const ResetPasswordPage = () => {
   return (
-    <div className='flex flex-1 flex-col items-center justify-center gap-3'>
-      <h1 className='text-3xl font-semibold'>checkm8</h1>
-      <p className='text-md font-extralight'>Ticking Off Success</p>
+    <main className='container px-0'>
+      <Card className='mx-auto max-w-lg'>
+        <CardHeader className='space-y-1'>
+          <CardTitle className='text-2xl'>Reset password</CardTitle>
+          <CardDescription>Enter your email address and we will send you a verification code</CardDescription>
+        </CardHeader>
 
-      <h5 className='mt-5 text-lg font-medium'>Reset password</h5>
-    </div>
+        <CardContent>
+          <ResetPasswordForm />
+        </CardContent>
+      </Card>
+    </main>
   );
 };
 
