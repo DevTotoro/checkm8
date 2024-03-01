@@ -1,11 +1,16 @@
 import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
+import type { User } from '@clerk/nextjs/server';
 
 import { Button } from '~/components/ui/button';
 import { Icons } from '~/components/icons';
+import { SignOutButton } from '~/components/auth/sign-out-button';
 import { ModeToggle } from '~/components/theme/mode-toggle';
 
-export const Header = () => {
+interface Props {
+  user: User | null;
+}
+
+export const Header = ({ user }: Props) => {
   return (
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='container flex h-16 items-center'>
@@ -18,13 +23,25 @@ export const Header = () => {
         </Link>
 
         <div className='flex flex-1 items-center justify-end space-x-2'>
-          <UserButton />
+          {!!user ? (
+            <Button asChild>
+              <Link href='/dashboard'>Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button variant='ghost' className='hidden sm:flex' asChild>
+                <Link href='/sign-in'>Sign in</Link>
+              </Button>
+
+              <Button asChild>
+                <Link href='/sign-up'>Get started</Link>
+              </Button>
+            </>
+          )}
 
           <ModeToggle />
 
-          <Button asChild>
-            <Link href='/sign-in'>Get started</Link>
-          </Button>
+          {!!user && <SignOutButton />}
         </div>
       </div>
     </header>

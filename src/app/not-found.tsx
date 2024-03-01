@@ -1,12 +1,16 @@
 import Link from 'next/link';
+import { currentUser } from '@clerk/nextjs';
+
 import { Button } from '~/components/ui/button';
 import { Header } from '~/components/layouts/header';
 
-const NotFoundPage = () => {
+const NotFoundPage = async () => {
+  const user = await currentUser();
+
   return (
     <div className='min-h-screen bg-background'>
       <div className='flex min-h-screen flex-col'>
-        <Header />
+        <Header user={user} />
         <div className='flex flex-1 flex-col p-4'>
           <main className='flex flex-1 flex-col items-center justify-center gap-2'>
             <h1 className='text-4xl font-bold'>404</h1>
