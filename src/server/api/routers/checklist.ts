@@ -1,7 +1,13 @@
 import { customAlphabet } from 'nanoid';
 
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { checklistSchema, deleteChecklistSchema, getUserChecklistsSchema } from '~/lib/schemas/checklist.schema';
+import {
+  checklistSchema,
+  deleteChecklistSchema,
+  getChecklistBySlugSchema,
+  getUserChecklistsSchema,
+  updateChecklistSchema,
+} from '~/lib/schemas/checklist.schema';
 
 export const checklistRouter = createTRPCRouter({
   create: protectedProcedure.input(checklistSchema).mutation(async ({ ctx, input }) => {
@@ -13,6 +19,29 @@ export const checklistRouter = createTRPCRouter({
         description: input.description === '' ? null : input.description,
         items: {
           create: input.items.map((item, index) => ({
+            text: item.text,
+            order: index,
+            subItems: {
+              create: item.children.map((child, childIndex) => ({
+                text: child.text,
+                order: childIndex,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }),
+
+  update: protectedProcedure.input(updateChecklistSchema).mutation(async ({ ctx, input }) => {
+    return ctx.db.checklist.update({
+      where: { id: input.checklistId },
+      data: {
+        title: input.checklist.title,
+        description: input.checklist.description === '' ? null : input.checklist.description,
+        items: {
+          deleteMany: {},
+          create: input.checklist.items.map((item, index) => ({
             text: item.text,
             order: index,
             subItems: {
@@ -50,6 +79,22 @@ export const checklistRouter = createTRPCRouter({
         hasNextPage: skip + take < total,
       },
     };
+  }),
+
+  get: protectedProcedure.input(getChecklistBySlugSchema).query(async ({ ctx, input }) => {
+    return ctx.db.checklist.findUnique({
+      where: { slug: input.slug },
+      include: {
+        items: {
+          orderBy: { order: 'asc' },
+          include: {
+            subItems: {
+              orderBy: { order: 'asc' },
+            },
+          },
+        },
+      },
+    });
   }),
 
   delete: protectedProcedure.input(deleteChecklistSchema).mutation(async ({ ctx, input }) => {

@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
+import { Prisma } from '@prisma/client';
 
 import {
   checklistSchema,
@@ -16,6 +17,7 @@ export interface ChecklistItem extends Omit<ChecklistItemSchemaType, 'children'>
 }
 
 interface ChecklistContextType {
+  id?: string;
   title: string;
   description: string;
   items: ChecklistItem[];
@@ -23,6 +25,8 @@ interface ChecklistContextType {
   titleError: string;
   descriptionError: string;
   itemsError: string;
+
+  editing: boolean;
 
   validate: () => { success: boolean; data?: ChecklistSchemaType };
 
@@ -40,6 +44,7 @@ interface ChecklistContextType {
 }
 
 const initialState: ChecklistContextType = {
+  id: undefined,
   title: '',
   description: '',
   items: [
@@ -53,6 +58,8 @@ const initialState: ChecklistContextType = {
   titleError: '',
   descriptionError: '',
   itemsError: '',
+
+  editing: false,
 
   validate: () => ({ success: false, data: undefined }),
 
@@ -71,11 +78,17 @@ const initialState: ChecklistContextType = {
 
 const ChecklistContext = createContext<ChecklistContextType>(initialState);
 
+type ChecklistWithRelations = Prisma.ChecklistGetPayload<{
+  include: { items: { include: { subItems: true } } };
+}> | null;
+
 interface Props {
   children: React.ReactNode;
+  checklist?: ChecklistWithRelations;
 }
 
-export const ChecklistContextProvider = ({ children }: Props) => {
+export const ChecklistContextProvider = ({ children, checklist }: Props) => {
+  const [id, setId] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState(initialState.title);
   const [description, setDescription] = useState(initialState.description);
   const [items, setItems] = useState<ChecklistItem[]>(initialState.items);
@@ -83,6 +96,22 @@ export const ChecklistContextProvider = ({ children }: Props) => {
   const [titleError, setTitleError] = useState(initialState.titleError);
   const [descriptionError, setDescriptionError] = useState(initialState.descriptionError);
   const [itemsError, setItemsError] = useState(initialState.itemsError);
+
+  useEffect(() => {
+    if (!checklist) return;
+
+    setId(checklist.id);
+    setTitle(checklist.title);
+    setDescription(checklist.description ?? '');
+
+    setItems(
+      checklist.items.map((item) => ({
+        id: item.id,
+        text: item.text,
+        children: item.subItems.map((child) => ({ id: child.id, text: child.text })),
+      })),
+    );
+  }, [checklist]);
 
   const validate = () => {
     setTitleError('');
@@ -235,6 +264,7 @@ export const ChecklistContextProvider = ({ children }: Props) => {
   return (
     <ChecklistContext.Provider
       value={{
+        id,
         title,
         description,
         items,
@@ -242,6 +272,8 @@ export const ChecklistContextProvider = ({ children }: Props) => {
         titleError,
         descriptionError,
         itemsError,
+
+        editing: !!checklist,
 
         validate,
 
