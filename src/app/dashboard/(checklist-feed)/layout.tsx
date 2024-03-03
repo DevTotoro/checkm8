@@ -3,11 +3,11 @@ import { PlusIcon } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
 
-const DashboardPage = () => {
+const DashboardChecklistFeedLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='container mt-6 flex flex-col items-center gap-3 sm:px-14'>
+    <div className='container mt-6 flex flex-1 flex-col items-center space-y-14 sm:px-14'>
       <div className='flex w-full items-center justify-between'>
-        <h1 className='text-3xl font-semibold'>Checklists</h1>
+        <h1 className='text-3xl font-semibold'>Your checklists</h1>
 
         <Button aria-label='Create checklist' className='hidden sm:flex' asChild>
           <Link href='/dashboard/checklists/create'>
@@ -22,9 +22,9 @@ const DashboardPage = () => {
         </Button>
       </div>
 
-      <p className='mt-8 text-center text-3xl font-light'>Checklists</p>
+      {children}
     </div>
   );
 };
 
-export default DashboardPage;
+export default DashboardChecklistFeedLayout;

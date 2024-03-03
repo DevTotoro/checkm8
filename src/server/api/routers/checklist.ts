@@ -1,7 +1,7 @@
 import { customAlphabet } from 'nanoid';
 
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { checklistSchema } from '~/lib/schemas/checklist.schema';
+import { checklistSchema, deleteChecklistSchema, getUserChecklistsSchema } from '~/lib/schemas/checklist.schema';
 
 export const checklistRouter = createTRPCRouter({
   create: protectedProcedure.input(checklistSchema).mutation(async ({ ctx, input }) => {
@@ -24,6 +24,37 @@ export const checklistRouter = createTRPCRouter({
           })),
         },
       },
+    });
+  }),
+
+  getUserChecklists: protectedProcedure.input(getUserChecklistsSchema).query(async ({ ctx, input }) => {
+    const take = input.take ?? 20;
+    const skip = input.skip ?? 0;
+
+    const data = await ctx.db.checklist.findMany({
+      where: { userId: ctx.user.id },
+      take,
+      skip,
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    const total = await ctx.db.checklist.count({
+      where: { userId: ctx.user.id },
+    });
+
+    return {
+      data,
+      meta: {
+        currentPage: Math.floor(skip / take) + 1,
+        totalPages: Math.ceil(total / take),
+        hasNextPage: skip + take < total,
+      },
+    };
+  }),
+
+  delete: protectedProcedure.input(deleteChecklistSchema).mutation(async ({ ctx, input }) => {
+    return ctx.db.checklist.delete({
+      where: { id: input.checklistId },
     });
   }),
 });

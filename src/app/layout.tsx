@@ -6,6 +6,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 
 import { cn } from '~/lib/utils';
 import { ThemeProvider } from '~/components/theme/theme-provider';
+import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
 import { TRPCReactProvider } from '~/trpc/react';
 
@@ -25,10 +26,12 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       <html lang='en' suppressHydrationWarning>
         <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
           <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-            <TRPCReactProvider>
-              {children}
-              <Toaster />
-            </TRPCReactProvider>
+            <TooltipProvider>
+              <TRPCReactProvider>
+                {children}
+                <Toaster />
+              </TRPCReactProvider>
+            </TooltipProvider>
           </ThemeProvider>
         </body>
       </html>

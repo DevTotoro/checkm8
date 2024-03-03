@@ -18,3 +18,13 @@ export const checklistSchema = z.object({
   description: z.string().optional(),
   items: z.array(checklistItemSchema).min(1, { message: 'Checklist must have at least 1 item' }),
 });
+
+export type GetUserChecklistsSchemaType = z.infer<typeof getUserChecklistsSchema>;
+export const getUserChecklistsSchema = z.object({
+  take: z.number().optional(),
+  skip: z.number().optional(),
+});
+
+export const deleteChecklistSchema = z.object({
+  checklistId: z.string(),
+});

@@ -12,6 +12,7 @@ import { Button } from '~/components/ui/button';
 import ChecklistContext from '~/components/contexts/checklist-context';
 import { ChecklistItemsForm } from '~/components/forms/checklist/checklist-items-form';
 import { api } from '~/trpc/react';
+import { copyToClipboard } from '~/lib/utils';
 
 export const CreateChecklistForm = () => {
   const router = useRouter();
@@ -27,13 +28,7 @@ export const CreateChecklistForm = () => {
         duration: 5000,
         action: {
           label: 'Copy link',
-          onClick: () => {
-            navigator.clipboard.writeText(`${window.location.host}/checklist/${slug}`).catch((err) => {
-              console.error(err);
-
-              toast.error('There was an error copying the link.');
-            });
-          },
+          onClick: () => void copyToClipboard(`${window.location.origin}/checklist/${slug}`),
         },
       });
 

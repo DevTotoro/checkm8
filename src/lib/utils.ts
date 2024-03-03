@@ -21,3 +21,17 @@ export const catchClerkError = (err: unknown) => {
 
   return toast.error(unknownError);
 };
+
+export const copyToClipboard = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+
+    toast.success('Copied to clipboard');
+  } catch (error) {
+    console.error(error);
+
+    toast.error('Failed to copy to clipboard', {
+      description: 'There was an error copying to your clipboard. Please try again.',
+    });
+  }
+};
