@@ -9,10 +9,10 @@ import {
   type ChecklistSchemaType,
 } from '~/lib/schemas/checklist.schema';
 
-export interface ChecklistItem extends Omit<ChecklistItemSchemaType, 'order' | 'children'> {
+export interface ChecklistItem extends Omit<ChecklistItemSchemaType, 'children'> {
   id: string;
   shouldFocus?: boolean;
-  children: (Omit<ChecklistItemSchemaType, 'order' | 'children'> & { id: string; shouldFocus?: boolean })[];
+  children: (Omit<ChecklistItemSchemaType, 'children'> & { id: string; shouldFocus?: boolean })[];
 }
 
 interface ChecklistContextType {
@@ -92,10 +92,9 @@ export const ChecklistContextProvider = ({ children }: Props) => {
     const checklist: ChecklistSchemaType = {
       title,
       description,
-      items: items.map(({ text, children }, index) => ({
+      items: items.map(({ text, children }) => ({
         text,
-        order: index,
-        children: children.map(({ text }, index) => ({ text, order: index })),
+        children: children.map(({ text }) => ({ text })),
       })),
     };
 
