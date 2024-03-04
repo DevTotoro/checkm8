@@ -27,6 +27,7 @@ export const updateChecklistSchema = z.object({
 export const getChecklistsSchema = z.object({
   take: z.number().optional(),
   cursor: z.string().optional(),
+  search: z.string().optional(),
 });
 
 export type GetUserChecklistsSchemaType = z.infer<typeof getUserChecklistsSchema>;

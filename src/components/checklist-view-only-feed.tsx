@@ -10,12 +10,17 @@ import { api } from '~/trpc/react';
 import { ChecklistViewOnlyCard } from '~/components/checklist-view-only-card';
 import { Loader2 } from 'lucide-react';
 
-export const ChecklistViewOnlyFeed = () => {
+interface Props {
+  search?: string;
+}
+
+export const ChecklistViewOnlyFeed = ({ search }: Props) => {
   const router = useRouter();
 
   const { status, error, isFetching, data, hasNextPage, fetchNextPage } = api.checklist.getAll.useInfiniteQuery(
     {
       take: 32,
+      search,
     },
     {
       getNextPageParam: (lastPage) => lastPage.meta.cursor,
@@ -88,6 +93,8 @@ export const ChecklistViewOnlyFeed = () => {
     );
   }
 
+  console.log(data.pages);
+
   return (
     <div className='flex w-full flex-col space-y-8'>
       <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4'>
@@ -106,7 +113,13 @@ export const ChecklistViewOnlyFeed = () => {
         {hasNextPage && isFetching ? (
           <Loader2 className='mx-auto size-12 animate-spin ' />
         ) : (
-          <p className='text-center text-sm font-medium'>You&apos;ve reached the end of the list</p>
+          <>
+            {data.pages.length === 1 && data.pages[0]?.data.length === 0 ? (
+              <p className='-mt-16 text-center text-sm font-medium sm:-mt-24'>No checklists found</p>
+            ) : (
+              <p className='text-center text-sm font-medium'>You&apos;ve reached the end of the list</p>
+            )}
+          </>
         )}
       </div>
     </div>

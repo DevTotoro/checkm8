@@ -60,11 +60,19 @@ export const checklistRouter = createTRPCRouter({
   getAll: publicProcedure.input(getChecklistsSchema).query(async ({ ctx, input }) => {
     const take = input.take ?? 20;
     const cursor = input.cursor ? { id: input.cursor } : undefined;
+    const splitSearch = input.search ? input.search.split(' ') : [];
+    const search =
+      splitSearch.length > 1 ? splitSearch.join(' & ') : splitSearch.length === 1 ? splitSearch[0] : undefined;
 
     const data = await ctx.db.checklist.findMany({
       take,
       skip: cursor ? 1 : 0,
       cursor,
+      where: search
+        ? {
+            OR: [{ title: { search } }, { slug: { search } }, { description: { search } }],
+          }
+        : undefined,
       orderBy: { updatedAt: 'desc' },
     });
 
