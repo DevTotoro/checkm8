@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs';
 
 import { Header } from '~/components/layouts/header';
+import { Footer } from '~/components/layouts/footer';
 
 export const metadata: Metadata = {
   title: 'checkm8 • Dashboard',
@@ -19,6 +20,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
     <div className='flex min-h-screen flex-col'>
       <Header />
       <div className='flex flex-1 flex-col p-4'>{children}</div>
+      <Footer />
     </div>
   );
 };

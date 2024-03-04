@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Button } from '~/components/ui/button';
 import { Header } from '~/components/layouts/header';
+import { Footer } from '~/components/layouts/footer';
 
 const NotFoundPage = () => {
   return (
@@ -23,6 +24,7 @@ const NotFoundPage = () => {
             </Button>
           </main>
         </div>
+        <Footer />
       </div>
     </div>
   );
