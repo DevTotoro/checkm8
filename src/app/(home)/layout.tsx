@@ -1,4 +1,5 @@
 import { Header } from '~/components/layouts/header';
+import { Footer } from '~/components/layouts/footer';
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,6 +10,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

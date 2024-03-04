@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Header } from '~/components/layouts/header';
+import { Footer } from '~/components/layouts/footer';
 
 export const metadata: Metadata = {
   title: 'checkm8 • Checklist',
@@ -13,6 +14,7 @@ const ChecklistLayout = ({ children }: { children: React.ReactNode }) => {
       <div className='flex flex-1 flex-col p-4'>
         <div className='container mt-6 flex flex-1 flex-col items-center space-y-14 sm:px-14'>{children}</div>
       </div>
+      <Footer />
     </div>
   );
 };
