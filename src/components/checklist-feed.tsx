@@ -13,7 +13,7 @@ export const ChecklistFeed = async ({ take, skip }: Props) => {
 
   return (
     <div className='flex w-full flex-col space-y-12'>
-      <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+      <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {checklists.map((checklist) => (
           <ChecklistCard key={checklist.id} checklist={checklist} />
         ))}
