@@ -109,7 +109,7 @@ export const checklistRouter = createTRPCRouter({
     };
   }),
 
-  get: protectedProcedure.input(getChecklistBySlugSchema).query(async ({ ctx, input }) => {
+  get: publicProcedure.input(getChecklistBySlugSchema).query(async ({ ctx, input }) => {
     return ctx.db.checklist.findUnique({
       where: { slug: input.slug },
       include: {
